@@ -10,11 +10,22 @@ import {
   TouchableOpacity,
   TouchableHighlight,
 } from 'react-native';
+
+import { useState,useEffect } from 'react';
+
+//for form data handle
 import {Formik} from 'formik';
+
 const Login = ({navigation}) => {
+
+  //to save the api response error
+  const [error,setError] = useState(null);
+
+  //user login function
     const loginFunction = async(values,action) =>{
         console.log(values);
         try {
+          //sending the request with values
             const response = await fetch('https://form-data-submission-2ew5.onrender.com/login',{
                 method:'POST',
                 headers:{
@@ -23,19 +34,36 @@ const Login = ({navigation}) => {
                 },
                 body : JSON.stringify(values),
             });
+
+            //response converted to json
             const result = await response.json();
             console.log('response : ',result);
 
-            if (response.status == 200){
-                navigation.navigate('Home');
+            //if user matches credentials
+            if (response.status === 200){
+
+              //navigate to home page
+              navigation.navigate('Home',{user: result?.user});
+            }else{
+              setError(result?.message);
             }
         } catch (err){
             console.log('error  : ',err);
         }
     };
+    
+    useEffect(() => {
+      setError(null);
+    },[]);
   return (
     <View style={styles.loginAppContainer}>
+
+      {/* login container  */}
       <View style={styles.loginFiedsContainer}>
+        <Text style={{fontSize:30, fontWeight:'bold',marginHorizontal:5,color:'black'}}>Login</Text>
+        <Text style={{fontSize:20, fontWeight:'bold',marginHorizontal:5}}>Please Sign in to continue.</Text>
+
+        {/* form inputs */}
         <Formik
           initialValues={{Email: '',Password : ''}}
           onSubmit={(values, action) => loginFunction(values,action)}>
@@ -56,15 +84,27 @@ const Login = ({navigation}) => {
                 secureTextEntry
                 style={styles.textInput}
                 />
-              <Button  onPress={handleSubmit} title="Login" />
+
+                {/* login button  */}
+              <Button  onPress={handleSubmit} title="Login" style={styles.buttonStyle}/>
             </View>
           )}
         </Formik>
+
+        {/* if any error occurs  */}
+        {
+          error && <Text style={{fontSize:15, marginHorizontal:5, textAlign:'center',marginTop:10,color:'red'}}>{error}</Text>
+        }
+
+        {/* forgot password button  */}
+        <Text style={{fontSize:15, marginHorizontal:5, textAlign:'center',marginTop:10,textDecorationLine:'underline'}}>Fogot Password</Text>
       </View>
+
+      {/* //footer  */}
       <View style={styles.footer}>
-            <Text>New User ?</Text>
+            <Text style={{fontSize:15,color:'grey'}}>New User ?</Text>
             <TouchableHighlight onPress={() => navigation.navigate('Register')} underlayColor={'white'}>
-                <Text>Register</Text>
+                <Text style={{fontSize:15, marginHorizontal:5, textAlign:'center',textDecorationLine:'underline',color:'black'}}>Register</Text>
             </TouchableHighlight>
       </View>
     </View>
@@ -74,25 +114,19 @@ export default Login;
 
 const styles = StyleSheet.create({
   loginAppContainer: {
-    borderWidth: 2,
     flex: 1,
-    padding: 5,
     margin: 5,
   },
   loginFiedsContainer: {
     flex: 10,
-    padding: 20,
+    padding: 10,
     justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
   },
   textInput:{
-    flex: 0,
     borderWidth: 1,
-    width: 200,
-    padding:5,
-    margin: 5,
-    borderRadius: 4,
+    marginVertical:10,
+    borderRadius: 8,
+    paddingLeft:4,
   },
   footer: {
     flex: 1,
