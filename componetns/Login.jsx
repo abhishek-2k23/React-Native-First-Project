@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable prettier/prettier */
 import {
@@ -13,25 +14,25 @@ import {Formik} from 'formik';
 const Login = ({navigation}) => {
     const loginFunction = async(values,action) =>{
         console.log(values);
-        try{
-            const response = await fetch("https://form-data-submission-2ew5.onrender.com/login",{
+        try {
+            const response = await fetch('https://form-data-submission-2ew5.onrender.com/login',{
                 method:'POST',
                 headers:{
                     Accept : 'application/json',
                     'Content-Type' : 'application/json',
                 },
                 body : JSON.stringify(values),
-            })
+            });
             const result = await response.json();
-            console.log("response : ",result);
-            
-            if(response.status == 200){
-                navigation.navigate("Home");
+            console.log('response : ',result);
+
+            if (response.status == 200){
+                navigation.navigate('Home');
             }
-        }catch(err){
-            console.log("error  : ",err);
+        } catch (err){
+            console.log('error  : ',err);
         }
-    }
+    };
   return (
     <View style={styles.loginAppContainer}>
       <View style={styles.loginFiedsContainer}>
