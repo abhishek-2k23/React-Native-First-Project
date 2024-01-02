@@ -134,7 +134,7 @@ import {
         {/* //footer  */}
         <View style={styles.footer}>
               <Text style={{fontSize:15,color:'grey'}}>Already Have Account ?</Text>
-              <TouchableHighlight onPress={() => navigation.navigate('Register')} underlayColor={'white'}>
+              <TouchableHighlight onPress={() => navigation.navigate('Login')} underlayColor={'white'}>
                   <Text style={{fontSize:15, marginHorizontal:5, textAlign:'center',textDecorationLine:'underline',color:'black'}}>Login</Text>
               </TouchableHighlight>
         </View>
