@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable prettier/prettier */
@@ -7,105 +8,170 @@ import {
   StyleSheet,
   TextInput,
   Button,
-  TouchableOpacity,
   TouchableHighlight,
+  useColorScheme,
+  ScrollView,
 } from 'react-native';
 
-import { useState,useEffect } from 'react';
+import {useState, useEffect} from 'react';
 
 //for form data handle
 import {Formik} from 'formik';
 
 const Login = ({navigation}) => {
-
   //to save the api response error
-  const [error,setError] = useState(null);
+  const [error, setError] = useState(null);
+
+  //get the colorScheme
+  const isDark = useColorScheme() === 'dark';
 
   //user login function
-    const loginFunction = async(values,action) =>{
-        console.log(values);
-        try {
-          //sending the request with values
-            const response = await fetch('https://form-data-submission-2ew5.onrender.com/login',{
-                method:'POST',
-                headers:{
-                    Accept : 'application/json',
-                    'Content-Type' : 'application/json',
-                },
-                body : JSON.stringify(values),
-            });
+  const loginFunction = async (values, action) => {
+    console.log(values);
+    try {
+      //sending the request with values
+      const response = await fetch(
+        'https://form-data-submission-2ew5.onrender.com/login',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(values),
+        },
+      );
 
-            //response converted to json
-            const result = await response.json();
-            console.log('response : ',result);
+      //response converted to json
+      const result = await response.json();
+      console.log('response : ', result);
 
-            //if user matches credentials
-            if (response.status === 200){
+      //if user matches credentials
+      if (response.status === 200) {
+        //navigate to home page
+        navigation.navigate('Home', {user: result?.user});
+      } else {
+        setError(result?.message);
+      }
+    } catch (err) {
+      console.log('error  : ', err);
+    }
+  };
 
-              //navigate to home page
-              navigation.navigate('Home',{user: result?.user});
-            }else{
-              setError(result?.message);
-            }
-        } catch (err){
-            console.log('error  : ',err);
-        }
-    };
-    
-    useEffect(() => {
-      setError(null);
-    },[]);
+  useEffect(() => {
+    setError(null);
+  }, []);
   return (
     <View style={styles.loginAppContainer}>
+      <ScrollView>
+        {/* login container  */}
+        <View style={styles.loginFiedsContainer}>
+          <Text
+            style={[
+              {fontSize: 30, fontWeight: 'bold', marginHorizontal: 5},
+              isDark ? styles.WhiteText : styles.DarkText,
+            ]}>
+            Login
+          </Text>
+          <Text
+            style={[
+              {fontSize: 20, fontWeight: 'bold', marginHorizontal: 5},
+              isDark ? styles.WhiteText : styles.DarkText,
+            ]}>
+            Please Sign in to continue.
+          </Text>
 
-      {/* login container  */}
-      <View style={styles.loginFiedsContainer}>
-        <Text style={{fontSize:30, fontWeight:'bold',marginHorizontal:5,color:'black'}}>Login</Text>
-        <Text style={{fontSize:20, fontWeight:'bold',marginHorizontal:5}}>Please Sign in to continue.</Text>
-
-        {/* form inputs */}
-        <Formik
-          initialValues={{Email: '',Password : ''}}
-          onSubmit={(values, action) => loginFunction(values,action)}>
-          {({handleChange, handleBlur, handleSubmit, values}) => (
-            <View>
-              <TextInput
-                onChangeText={handleChange('Email')}
-                onBlur={handleBlur('Email')}
-                value={values.Email}
-                placeholder="Enter your Email"
-                style={styles.textInput}
-              />
-              <TextInput
-                onChangeText={handleChange('Password')}
-                onBlur={handleBlur('Password')}
-                value={values.Password}
-                placeholder="Enter your password"
-                secureTextEntry
-                style={styles.textInput}
+          {/* form inputs */}
+          <Formik
+            initialValues={{Email: '', Password: ''}}
+            onSubmit={(values, action) => loginFunction(values, action)}>
+            {({handleChange, handleBlur, handleSubmit, values}) => (
+              <View>
+                <TextInput
+                  onChangeText={handleChange('Email')}
+                  onBlur={handleBlur('Email')}
+                  value={values.Email}
+                  placeholder="Enter your Email"
+                  style={[styles.textInput, isDark && styles.WhiteText]}
+                  placeholderTextColor={isDark ? '#fff' : '#000'}
+                />
+                <TextInput
+                  onChangeText={handleChange('Password')}
+                  onBlur={handleBlur('Password')}
+                  value={values.Password}
+                  placeholder="Enter your password"
+                  secureTextEntry
+                  style={[styles.textInput, isDark && styles.WhiteText]}
+                  placeholderTextColor={isDark ? '#fff' : '#000'}
                 />
 
                 {/* login button  */}
-              <Button  onPress={handleSubmit} title="Login" style={styles.buttonStyle}/>
-            </View>
+                <Button
+                  onPress={handleSubmit}
+                  title="Login"
+                  style={styles.buttonStyle}
+                />
+              </View>
+            )}
+          </Formik>
+
+          {/* if any error occurs  */}
+          {error && (
+            <Text
+              style={{
+                fontSize: 15,
+                marginHorizontal: 5,
+                textAlign: 'center',
+                marginTop: 10,
+                color: 'red',
+              }}>
+              {error}
+            </Text>
           )}
-        </Formik>
 
-        {/* if any error occurs  */}
-        {
-          error && <Text style={{fontSize:15, marginHorizontal:5, textAlign:'center',marginTop:10,color:'red'}}>{error}</Text>
-        }
-
-        {/* forgot password button  */}
-        <Text style={{fontSize:15, marginHorizontal:5, textAlign:'center',marginTop:10,textDecorationLine:'underline'}}>Fogot Password</Text>
-      </View>
+          {/* forgot password button  */}
+          <TouchableHighlight
+            onPress={() => navigation.navigate('ForgotPassword')}>
+            <Text
+              style={[
+                {
+                  fontSize: 15,
+                  marginHorizontal: 5,
+                  textAlign: 'center',
+                  marginTop: 10,
+                  textDecorationLine: 'underline',
+                },
+                isDark && styles.WhiteText,
+              ]}>
+              Fogot Password
+            </Text>
+          </TouchableHighlight>
+        </View>
+      </ScrollView>
 
       {/* //footer  */}
       <View style={styles.footer}>
-            <Text style={{fontSize:15,color:'grey'}}>New User ?</Text>
-            <TouchableHighlight onPress={() => navigation.navigate('Register')} underlayColor={'white'}>
-                <Text style={{fontSize:15, marginHorizontal:5, textAlign:'center',textDecorationLine:'underline',color:'black'}}>Register</Text>
-            </TouchableHighlight>
+        <Text
+          style={[{fontSize: 15, color: 'grey'}, isDark && styles.WhiteText]}>
+          New User ?
+        </Text>
+        <TouchableHighlight
+          onPress={() => navigation.navigate('Register')}
+          underlayColor={'white'}>
+          <Text
+            style={[
+              {
+                fontSize: 15,
+                marginHorizontal: 5,
+                textAlign: 'center',
+                textDecorationLine: 'underline',
+                color: 'black',
+              },
+              isDark && styles.WhiteText,
+            ]}>
+            Register
+          </Text>
+        </TouchableHighlight>
       </View>
     </View>
   );
@@ -116,17 +182,20 @@ const styles = StyleSheet.create({
   loginAppContainer: {
     flex: 1,
     margin: 5,
+    justifyContent: 'center',
   },
   loginFiedsContainer: {
     flex: 10,
-    padding: 10,
+    padding: 8,
+    marginTop: '20%',
+    alignContent: 'center',
     justifyContent: 'center',
   },
-  textInput:{
+  textInput: {
     borderWidth: 1,
-    marginVertical:10,
+    marginVertical: 10,
     borderRadius: 8,
-    paddingLeft:4,
+    paddingLeft: 4,
   },
   footer: {
     flex: 1,
@@ -134,5 +203,13 @@ const styles = StyleSheet.create({
     gap: 4,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  WhiteText: {
+    color: '#fff',
+    borderColor: '#fff',
+  },
+  DarkText: {
+    color: '#000',
   },
 });
