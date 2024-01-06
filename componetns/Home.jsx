@@ -3,6 +3,7 @@ import {StyleSheet, Text, View} from 'react-native';
 
 const Home = ({route}) => {
   const {user} = route.params;
+  console.log(user);
   return (
     <View style={styles.container}>
       <Text style={styles.textStyle}>Hi, {user?.firstName}</Text>
