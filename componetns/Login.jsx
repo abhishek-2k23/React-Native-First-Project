@@ -14,13 +14,13 @@ import {
 } from 'react-native';
 
 import {useState, useEffect} from 'react';
-
-//for form data handle
 import {Formik} from 'formik';
+import Toast from 'react-native-toast-message';
 
 const Login = ({navigation}) => {
   //to save the api response error
   const [error, setError] = useState(null);
+  const [wait, setWait] = useState(false);
 
   //get the colorScheme
   const isDark = useColorScheme() === 'dark';
@@ -29,6 +29,9 @@ const Login = ({navigation}) => {
   const loginFunction = async (values, action) => {
     console.log(values);
     try {
+      //set the button disable
+      setWait(true);
+
       //sending the request with values
       const response = await fetch(
         'https://form-data-submission-2ew5.onrender.com/login',
@@ -49,12 +52,28 @@ const Login = ({navigation}) => {
       //if user matches credentials
       if (response.status === 200) {
         //navigate to home page
+        Toast.show({
+          type:'success',
+          text1: 'success',
+          text2: 'Login success full',
+          topOffset: 60,
+        });
         navigation.navigate('Home', {user: result?.user});
       } else {
         setError(result?.message);
+        Toast.show({
+          type:'error',
+          text1: 'Error',
+          text2: result?.message,
+          topOffset: 60,
+
+        });
       }
+
+      setWait(false);
     } catch (err) {
       console.log('error  : ', err);
+      setWait(false);
     }
   };
 
@@ -110,6 +129,7 @@ const Login = ({navigation}) => {
                   onPress={handleSubmit}
                   title="Login"
                   style={styles.buttonStyle}
+                  disabled = {wait}
                 />
               </View>
             )}
