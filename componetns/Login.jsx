@@ -13,15 +13,13 @@ import {
   useColorScheme,
   ScrollView,
 } from 'react-native';
-
 import {useState, useEffect} from 'react';
 import {Formik} from 'formik';
 import Toast from 'react-native-toast-message';
 import * as yup from 'yup';
 
 const Login = ({navigation}) => {
-  //to save the api response error
-  const [error, setError] = useState(null);
+  //to disable the login button
   const [wait, setWait] = useState(false);
 
   //get the colorScheme
@@ -39,7 +37,7 @@ const Login = ({navigation}) => {
     try {
       //set the button disable
       setWait(true);
-
+      console.log("Wait true")
       //sending the request with values
       const response = await fetch(
         'https://form-data-submission-2ew5.onrender.com/login',
@@ -59,16 +57,17 @@ const Login = ({navigation}) => {
 
       //if user matches credentials
       if (response.status === 200) {
-        //navigate to home page
+        //show the toast
         Toast.show({
           type:'success',
           text1: 'success',
           text2: 'Login success full',
           topOffset: 60,
         });
+
+        //goto Dashboard
         navigation.navigate('Home', {user: result?.user});
       } else {
-        setError(result?.message);
         Toast.show({
           type:'error',
           text1: 'Error',
@@ -76,6 +75,7 @@ const Login = ({navigation}) => {
           topOffset: 60,
 
         });
+        setWait(false);
       }
 
       setWait(false);
@@ -92,9 +92,6 @@ const Login = ({navigation}) => {
     }
   };
 
-  useEffect(() => {
-    setError(null);
-  }, []);
   return (
     <View style={styles.loginAppContainer}>
       <ScrollView>
@@ -119,8 +116,13 @@ const Login = ({navigation}) => {
           <Formik
             initialValues={{Email: '', Password: ''}}
             validationSchema={userSchema}
+
+            //To check only on submit
+            validateOnChange={false}
+
             onSubmit={(values, action) => loginFunction(values, action)}>
-            {({handleChange, handleBlur, handleSubmit, values,errors}) => (
+
+            {({handleChange, handleBlur, handleSubmit, values,errors,touched}) => (
               <View>
                 <TextInput
                   onChangeText={handleChange('Email')}
@@ -131,7 +133,7 @@ const Login = ({navigation}) => {
                   placeholderTextColor={isDark ? '#fff' : '#000'}
                 />
                 {
-                  errors.Email && (
+                  touched.Email && errors.Email && (
                     <Text style = {styles.errorStyle}> {errors?.Email}</Text>
                   )
                 }
@@ -145,34 +147,20 @@ const Login = ({navigation}) => {
                   placeholderTextColor={isDark ? '#fff' : '#000'}
                 />
                 {
-                  errors.Password && (
+                  touched.Password && errors.Password && (
                     <Text style = {[styles.errorStyle,{marginBottom: 10}]}> {errors?.Password}</Text>
                   )
                 }
                 {/* login button  */}
                 <Button
                   onPress={handleSubmit}
-                  title="Login"
+                  title={wait ? "Wait..." : "Login"}
                   style={styles.buttonStyle}
                   disabled = {wait}
                 />
               </View>
             )}
           </Formik>
-
-          {/* if any error occurs  */}
-          {error && (
-            <Text
-              style={{
-                fontSize: 15,
-                marginHorizontal: 5,
-                textAlign: 'center',
-                marginTop: 10,
-                color: 'red',
-              }}>
-              {error}
-            </Text>
-          )}
 
           {/* forgot password button  */}
           <TouchableHighlight
