@@ -29,14 +29,14 @@ const Register = ({navigation}) => {
 
   //new user data validation
   const userSchema = Yup.object().shape({
-    firstName : Yup.string('only characters acceptable').min(2).required('first name required'),
-    lastName : Yup.string('only characters acceptable').required('last name required'),
-    Age : Yup.number('only positive numbers acceptable').min(0).required('Age required'),
+    firstName : Yup.string().typeError('only characters acceptable').min(2).required('first name required'),
+    lastName : Yup.string().typeError('only characters acceptable').required('last name required'),
+    Age : Yup.number().typeError('must be a number').positive().integer().required('Age required').max(150),
     gender : Yup.string('only letters acceptable').required('gender required'),
     Email : Yup.string('Enter email').email('must be a valid email'
     ).required(),
     Password : Yup.string().required('Password required'),
-    phoneNumber : Yup.number().required().min(10,'min 10 digits').max(10, 'max 10 digits')
+    phoneNumber : Yup.number().required().min(999999999,'min 10 digits')
   });
 
   //user login function
@@ -122,10 +122,11 @@ const Register = ({navigation}) => {
               gender: '',
             }}
             validationSchema={userSchema}
+            validateOnChange={false}
             onSubmit={(values, action) => loginFunction(values, action)}>
             {
               //arrow unnamed function which take input and handle errors
-              ({handleChange, handleBlur, handleSubmit, values,errors}) => (
+              ({handleChange, handleBlur, handleSubmit, values,errors,touched}) => (
                 // input fields view
                 <View>
                   <TextInput
@@ -137,7 +138,7 @@ const Register = ({navigation}) => {
                     placeholderTextColor={isDark ? '#fff' : '#000'}
                   />
                   {
-                  errors.firstName && (
+                  touched.firstName && errors.firstName && (
                     <Text style = {styles.errorStyle}> {errors?.firstName}</Text>
                   )
                 }
@@ -150,7 +151,7 @@ const Register = ({navigation}) => {
                     placeholderTextColor={isDark ? '#fff' : '#000'}
                   />
                   {
-                  errors.lastName && (
+                  touched.lastName && errors.lastName && (
                     <Text style = {styles.errorStyle}> {errors?.lastName}</Text>
                   )
                 }
@@ -163,7 +164,7 @@ const Register = ({navigation}) => {
                     placeholderTextColor={isDark ? '#fff' : '#000'}
                   />
                   {
-                  errors.Age && (
+                  touched.Age && errors.Age && (
                     <Text style = {styles.errorStyle}> {errors?.Age}</Text>
                   )
                 }
@@ -176,7 +177,7 @@ const Register = ({navigation}) => {
                     placeholderTextColor={isDark ? '#fff' : '#000'}
                   />
                   {
-                  errors.gender && (
+                  touched.gender && errors.gender && (
                     <Text style = {styles.errorStyle}> {errors?.gender}</Text>
                   )
                 }
@@ -189,7 +190,7 @@ const Register = ({navigation}) => {
                     placeholderTextColor={isDark ? '#fff' : '#000'}
                   />
                   {
-                  errors.Email && (
+                  touched.Email && errors.Email && (
                     <Text style = {styles.errorStyle}> {errors?.Email}</Text>
                   )
                 }
@@ -202,7 +203,7 @@ const Register = ({navigation}) => {
                     placeholderTextColor={isDark ? '#fff' : '#000'}
                   />
                   {
-                  errors.phoneNumber && (
+                  touched.phoneNumber && errors.phoneNumber && (
                     <Text style = {styles.errorStyle}> {errors?.phoneNumber}</Text>
                   )
                 }
@@ -216,6 +217,11 @@ const Register = ({navigation}) => {
                     placeholderTextColor={isDark ? '#fff' : '#000'}
                   />
                   {
+                    touched.Password && errors.Password && (
+                      <Text style = {styles.errorStyle}> {errors?.Password}</Text>
+                    )
+                  }
+                  {
                   errors.Password && (
                     <Text style = {[styles.errorStyle,{marginBottom: 10}]}></Text>
                   )
@@ -224,7 +230,7 @@ const Register = ({navigation}) => {
                   {/* login button  */}
                   <Button
                     onPress={handleSubmit}
-                    title="Register"
+                    title={!wait ? "Register" : "wait ..."}
                     style={styles.buttonStyle}
                     disabled={wait}
                   />
