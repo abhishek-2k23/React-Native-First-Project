@@ -14,12 +14,13 @@ import {
 } from 'react-native';
 import {useState} from 'react';
 import {Formik} from 'formik';
+import Toast from 'react-native-toast-message';
 
 //main function ->>>>>>>>>>>>>>>
 const Register = ({navigation}) => {
   //to save the api response error
   const [error, setError] = useState();
-
+  const [wait,setWait] = useState(false);
 
   //color scheme
   const isDark = useColorScheme() === 'dark';
@@ -28,6 +29,9 @@ const Register = ({navigation}) => {
   const loginFunction = async (values, action) => {
     console.log(values);
     try {
+      //set wait true
+      setWait(true);
+
       //sending the request with values
       const response = await fetch(
         'https://form-data-submission-2ew5.onrender.com/register',
@@ -49,11 +53,31 @@ const Register = ({navigation}) => {
       if (response.status === 200) {
         //navigate to home page
         navigation.navigate('Login');
+        Toast.show({
+          type : 'success',
+          text1 : 'Data Submitted',
+          text2 : 'You are registered Successfully',
+          topOffset : 60,
+        })
       } else {
         setError(result?.message);
+        Toast.show({
+          type : 'error',
+          text1 : 'Not registered',
+          text2 : result?.message,
+          topOffset : 60,
+        })
       }
+      setWait(false);
     } catch (err) {
       console.log('error  : ', err);
+      setWait(false);
+      Toast.show({
+        type : 'error',
+        text1 : 'Not registered',
+        text2 : err?.message,
+        topOffset : 60,
+      })
     }
   };
 
@@ -152,6 +176,7 @@ const Register = ({navigation}) => {
                     onPress={handleSubmit}
                     title="Register"
                     style={styles.buttonStyle}
+                    disabled={wait} 
                   />
                 </View>
               )
