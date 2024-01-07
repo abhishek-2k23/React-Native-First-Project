@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable prettier/prettier */
 import {StyleSheet, Text, View} from 'react-native';
 
@@ -6,9 +7,8 @@ const Home = ({route}) => {
   console.log(user);
   return (
     <View style={styles.container}>
-      <Text style={styles.textStyle}>Hi, {user?.firstName}</Text>
+      <Text style={styles.textStyle}>Hi,{user?.firstName}</Text>
       <Text style={styles.textStyle}>Welcome to Home</Text>
-      
     </View>
   );
 };
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textStyle: {
-    fontSize:20,
+    fontSize:15,
     fontWeight:'bold',
     color: 'black',
     margin:1,
