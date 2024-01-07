@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable prettier/prettier */
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable prettier/prettier */
 import {StyleSheet, Text, View} from 'react-native';
@@ -25,5 +27,5 @@ const styles = StyleSheet.create({
     fontWeight:'bold',
     color: 'black',
     margin:1,
-  }
+  },
 });
