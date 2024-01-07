@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/react-in-jsx-scope */
@@ -16,6 +17,7 @@ import {
 import {useState, useEffect} from 'react';
 import {Formik} from 'formik';
 import Toast from 'react-native-toast-message';
+import * as yup from 'yup';
 
 const Login = ({navigation}) => {
   //to save the api response error
@@ -24,6 +26,12 @@ const Login = ({navigation}) => {
 
   //get the colorScheme
   const isDark = useColorScheme() === 'dark';
+
+  //form validation
+  const userSchema = yup.object().shape({
+    Email : yup.string().required('email is required').email('must be a valid email'),
+    Password : yup.string().required('password is required'),
+  });
 
   //user login function
   const loginFunction = async (values, action) => {
@@ -73,6 +81,13 @@ const Login = ({navigation}) => {
       setWait(false);
     } catch (err) {
       console.log('error  : ', err);
+      Toast.show({
+        type:'error',
+        text1: 'Error',
+        text2: err.message,
+        topOffset: 60,
+
+      });
       setWait(false);
     }
   };
@@ -103,8 +118,9 @@ const Login = ({navigation}) => {
           {/* form inputs */}
           <Formik
             initialValues={{Email: '', Password: ''}}
+            validationSchema={userSchema}
             onSubmit={(values, action) => loginFunction(values, action)}>
-            {({handleChange, handleBlur, handleSubmit, values}) => (
+            {({handleChange, handleBlur, handleSubmit, values,errors}) => (
               <View>
                 <TextInput
                   onChangeText={handleChange('Email')}
@@ -114,6 +130,11 @@ const Login = ({navigation}) => {
                   style={[styles.textInput, isDark && styles.WhiteText]}
                   placeholderTextColor={isDark ? '#fff' : '#000'}
                 />
+                {
+                  errors.Email && (
+                    <Text style = {styles.errorStyle}> {errors?.Email}</Text>
+                  )
+                }
                 <TextInput
                   onChangeText={handleChange('Password')}
                   onBlur={handleBlur('Password')}
@@ -123,7 +144,11 @@ const Login = ({navigation}) => {
                   style={[styles.textInput, isDark && styles.WhiteText]}
                   placeholderTextColor={isDark ? '#fff' : '#000'}
                 />
-
+                {
+                  errors.Password && (
+                    <Text style = {[styles.errorStyle,{marginBottom: 10}]}> {errors?.Password}</Text>
+                  )
+                }
                 {/* login button  */}
                 <Button
                   onPress={handleSubmit}
@@ -232,4 +257,8 @@ const styles = StyleSheet.create({
   DarkText: {
     color: '#000',
   },
+  errorStyle : {
+    color : 'red',
+    marginTop: -5
+  }
 });
