@@ -1,37 +1,34 @@
-## Step 1: Start the Metro Server
+# Registration App
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+Welcome to the Registration App, a mobile application developed using React Native and secured with TypeScript for code integrity. This app allows users to easily create an account, log in, and switch between dark and light modes using ColorTheme. Navigation is implemented using the @react-navigation/native, @react-navigation/native-stack, and react-native-screens packages for a seamless user experience.
 
-To start Metro, run the following command from the _root_ of your React Native project:
+## Features
 
-```bash
-# using npm
-npm start
+- **Account Creation:** Users can create a new account with the app, providing necessary information for registration.
 
-# OR using Yarn
-yarn start
-```
+- **Login Functionality:** Registered users can log in securely to access their accounts and use the app's features.
 
-## Step 2: Start your Application
+- **Dark/Light Mode:** The app supports a ColorTheme feature, allowing users to switch between dark and light modes based on their preferences.
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+- **React Navigation:** Navigation within the app is facilitated by the @react-navigation/native, @react-navigation/native-stack, and react-native-screens packages, ensuring smooth transitions between different screens.
 
-### For Android
+## Tech Stack
 
-```bash
-# using npm
-npm run android
+- **React Native:** The app is built using the React Native framework, providing a cross-platform development environment.
 
-# OR using Yarn
-yarn android
-```
+- **TypeScript:** TypeScript is employed to enhance code security, providing static typing and improved developer tooling.
 
-### For iOS
+- **@react-navigation/native:** Used for basic navigation and screen management within the app.
 
-```bash
-# using npm
-npm run ios
+- **@react-navigation/native-stack:** Utilized for stack-based navigation, managing the flow of screens in a stack.
 
-# OR using Yarn
-yarn ios
-```
+- **react-native-screens:** Enhances the performance of navigation by using native views.
+
+## Getting Started
+
+To get started with the Registration App, follow these steps:
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/abhishek-2k23/React-Native-First-Project
